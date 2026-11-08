@@ -1,0 +1,14 @@
+{
+  "name": "rodokmen-slovensko",
+  "description": "Slovenský doplnok k skillu rodokmen pre Claude Code.",
+  "owner": {
+    "name": "Lacike007"
+  },
+  "plugins": [
+    {
+      "name": "rodokmen-slovensko",
+      "source": "./",
+      "description": "Slovenské a uhorské matriky, žiadosti na matriky, rodinné doklady, strom potomkov (po slovensky)."
+    }
+  ]
+}

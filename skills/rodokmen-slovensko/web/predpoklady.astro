@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import strom from '../generated/predpokladany_strom.html?raw';
+---
+<Base title="Strom predpokladov" full>
+  <div style="padding:0 24px">
+  <h1>Strom predpokladov</h1>
+  <p class="muted"><strong>Pravdepodobné a nepotvrdené vetvy</strong> – oddelene od overeného rodokmeňa. Čo je doložené, pravdepodobné a čo je len predpoklad, ukazuje farba rámčeka. Dopĺňa sa v súbore <code>data/predpoklady.py</code>; po potvrdení zápisom sa osoba presunie do hlavného stromu.</p>
+  <p class="muted strom-tip">Strom posúvate ťahaním myšou (alebo kolieskom so Shiftom do strán), zväčšujete tlačidlami pri každom strome.</p>
+  <div id="strom" set:html={strom} />
+  </div>
+</Base>
+
+<style is:global>
+  #strom .ft-wrap{overflow:auto;max-height:80vh;cursor:grab;border:1px solid #e4ddd5;border-radius:8px;background:#fdfcfa;user-select:none}
+  #strom .ft-wrap.tahanie{cursor:grabbing}
+  #strom .ft{margin:0;padding:16px 24px}
+  .strom-ovl{display:flex;gap:6px;align-items:center;margin:4px 0 6px;font:13px Arial,sans-serif}
+  .strom-ovl button{border:1px solid #c9bcae;background:#fff;border-radius:6px;padding:3px 10px;cursor:pointer;font:inherit}
+  .strom-ovl button:hover{background:#f3ede6}
+  .strom-ovl span{color:#6b5e54;min-width:3.5em;text-align:center}
+</style>
+
+<script>
+  for (const wrap of document.querySelectorAll<HTMLElement>('#strom .ft-wrap')) {
+    const ft = wrap.querySelector<HTMLElement>('.ft');
+    if (!ft) continue;
+    let mierka = 1;
+    const ovl = document.createElement('div');
+    ovl.className = 'strom-ovl';
+    ovl.innerHTML = '<button data-a="-">−</button><span>100 %</span><button data-a="+">+</button>' +
+      '<button data-a="fit">Celý strom</button><button data-a="1">100 %</button>';
+    wrap.before(ovl);
+    const popis = ovl.querySelector('span')!;
+    const nastav = (m: number) => {
+      mierka = Math.min(2, Math.max(0.2, m));
+      ft.style.zoom = String(mierka);
+      popis.textContent = Math.round(mierka * 100) + ' %';
+    };
+    ovl.addEventListener('click', (e) => {
+      const a = (e.target as HTMLElement).dataset.a;
+      if (a === '+') nastav(mierka * 1.25);
+      else if (a === '-') nastav(mierka / 1.25);
+      else if (a === '1') nastav(1);
+      else if (a === 'fit') { nastav(1); nastav((wrap.clientWidth - 8) / ft.scrollWidth); }
+    });
+    // posúvanie ťahaním myšou
+    let tah = false, x0 = 0, y0 = 0, sl = 0, st = 0;
+    wrap.addEventListener('mousedown', (e) => {
+      tah = true; x0 = e.clientX; y0 = e.clientY; sl = wrap.scrollLeft; st = wrap.scrollTop;
+      wrap.classList.add('tahanie'); e.preventDefault();
+    });
+    window.addEventListener('mousemove', (e) => {
+      if (!tah) return;
+      wrap.scrollLeft = sl - (e.clientX - x0);
+      wrap.scrollTop = st - (e.clientY - y0);
+    });
+    window.addEventListener('mouseup', () => { tah = false; wrap.classList.remove('tahanie'); });
+    // na začiatku vycentrovať (koreň stromu je v strede)
+    wrap.scrollLeft = (wrap.scrollWidth - wrap.clientWidth) / 2;
+  }
+</script>
