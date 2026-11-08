@@ -33,6 +33,15 @@ Vráti riadky „meno | udalosti | rodičia | id“. Výstup nástroja sa reže 
 - Ak sa „stratí“ skupina kariet hneď po otvorení FS, zavolaj `tabs_context_mcp` s `createIfEmpty` a skús znova;
   pri opakovaní reštart `claude --chrome --continue`.
 
+### Doplnky z forku xsigik/rodokmen-skill (overené v praxi inými, MIT)
+- **Limit:** po ~1000 rýchlych požiadavkách FamilySearch vráti HTTP 429 a blokuje desiatky minút – len konkrétne snímky, nanajvýš pár za sekundu, žiadne hromadné listovanie.
+- **Zoznam snímok filmu (DGS) bez klikania:** `fetch('/search/filmdatainfo/image-data', {method:'POST', credentials:'include', headers:{'content-type':'application/json'}, body: JSON.stringify({type:'film-data', args:{dgsNum:'00…', state:{i:'0'}, locale:'sk'}})})` → `images[]` = ARK snímok. Film otvoríš aj adresou `https://www.familysearch.org/search/film/<DGS doplnené nulami na 9 číslic>`.
+- **Index:** hľadaj aj cez rodičov bez krstného mena (`q.fatherGivenName`, `q.motherSurname`), pri sobášoch `q.spouseSurname`, `q.marriageLikePlace`; index krstov uvádza len faru, obec a dom sú až na snímke. Výsledky stránky čítaj lacno z riadkov tabuľky: `[...document.querySelectorAll('tr')].map(r => [r.innerText.replace(/\s+/g,' ').trim(), r.querySelector('a[href*="1:1:"]')?.href]).filter(r => r[1])`.
+- **Katalóg:** názov záznamu preceňuje („Cirkevná matrika 1762–1927“ má krsty, sobáše, úmrtia často len do 1895, ďalej len birmovky) – vždy prečítaj tabuľku filmov (poznámka | film | DGS).
+- **Prehliadač snímok:** zavri spodný panel a daj „prispôsobiť“, inak vidíš len hornú časť dvojstrany. Stiahnutie cez ikonu → „Iba JPG“ (predvolené je PDF), súbor hneď premenuj na `<DGS>_<snímka>.jpg`.
+- **Pozor:** podľa xsigik automatizovaný prehliadač bez prihláseného profilu dostáva „Access Denied – Error 15“; naše okno `fs_okno.py` má vlastný trvalý profil s prihlásením používateľa a funguje – keby začalo hlásiť Error 15, nepokúšaj sa to obísť.
+- **Hroby a 20. storočie:** Košice – gisplan.kosice.sk, cintoriny.sk (časť obcí). Rusíni vedení po 1950 ako pravoslávni majú staršie zápisy v gréckokatolíckych knihách.
+
 ## 4. Maďarské a latinské výrazy v zápisoch
 Pozri `reference/slovnik.md` (stav, náboženstvo, povolania, legitimita, uhorské názvy obcí).
 
@@ -84,6 +93,16 @@ viac manželstiev). Nástroje sú v `tools/` tohto skillu, web stránky vo `web/
   veľkosti (PDF ich zmenšuje na šírku strany). Cez WhatsApp poslať ako dokument.
 - Po každej zmene `rodina.py` pregeneruj **všetko**: web (`npm run data && npm run build`), PDF aj obrázok –
   rodina pozerá to, čo dostala.
+
+## 6c. Sčítanie ľudu 1930 (Slovakiana) a slovenský web
+- **Sčítacie hárky 1930:** `tools/slovakiana.py hledat "Obec" --rok 1930` → index hárkov obce (ulica, číslo domu, odkaz),
+  `harok <cair-id>` → popis hárku. Nástroj je z forku jozefizso/rodokmen-skill, upravený: **snímky nesťahuje**
+  (Slovakiana má pri hárkoch downloadable: false a v robots.txt Disallow pre content.slovakiana.sk). Hárok si pozri
+  v prehliadači ako návštevník: otvor odkaz, tlačidlo „celá obrazovka“ (štyri šípky vpravo dole) a raz „−“ – vidno celú
+  stranu; šípka vpravo = 2. strana. Medzi stránkami aspoň 10 s. Hľadať podľa mena Slovakiana nevie – zúž ulicu
+  (rodinné spomienky, adresy z dokladov; ulice sa premenovávali, hlavne 1939) a prejdi jej domy.
+  Do `tools/slusne.py` pridaj `"slovakiana.sk": (10.0, 10.0)` do LIMITY a `content.slovakiana.sk` do ZAKAZ.
+- **Web po slovensky:** prepínač SK/CZ – `reference/web_jazyk.md`. **Strom s rozbaľovaním vetiev:** `web/strom.astro`.
 
 ## 7. Iné slovenské zdroje
 - **Hroby**: virtuálne cintoríny miest (Prešov – Technické služby mesta Prešov, cintorin@tsmp.sk) – dátumy, číslo hrobu.

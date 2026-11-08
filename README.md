@@ -11,6 +11,8 @@ tento doplnok pridáva to, čo treba pre **predkov zo Slovenska a bývalého Uho
   naozaj odpovedajú, poplatky, na čo si dať pozor (`reference/ziadosti_skusenosti.md`)
 - **rodinné doklady** (rodné, sobášne, úmrtné, domovské listy) – čo z ktorého vyťažiť
 - **strom potomkov a strom predpokladov** pre rodinu – web, PDF na tlač, veľký obrázok na tablet
+- **sčítanie ľudu 1930** zo Slovakiany – index hárkov obce podľa ulice a čísla domu (`tools/slovakiana.py`)
+- **web po slovensky** – prepínač SK/CZ v hlavičke rodinného webu, strom s rozbaľovaním vetiev
 
 ## Inštalácia
 Najprv nainštaluj hlavný skill podľa [jeho návodu](https://github.com/sarsonj/rodokmen-skill). Potom v Claude Code:
@@ -26,6 +28,10 @@ a reštartuj Claude Code. Skill sa použije sám, keď ide o slovenských predko
 Vítané sú skúsenosti (ako odpovedal ktorý úrad či archív, nové zdroje, opravy slovníka) aj opravy nástrojov –
 cez **Issues** alebo **pull request**. Každú zmenu pred zaradením prečíta a schváli správca.
 Pozri [CONTRIBUTING.md](CONTRIBUTING.md) – hlavne: **žiadne osobné údaje** (mená žijúcich ľudí, adresy, skeny dokladov).
+
+## Poďakovanie
+Časti sú prevzaté (MIT) z forkov hlavného skillu: sčítanie 1930 zo Slovakiany (jozefizso), postupy pre FamilySearch (xsigik),
+nápad rozbaľovania stromu (jozefizso, mplisek).
 
 ## Licencia
 MIT – pozri [LICENSE](LICENSE).

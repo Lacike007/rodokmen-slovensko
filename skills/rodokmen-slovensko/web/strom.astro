@@ -19,6 +19,9 @@ import strom from '../generated/rodinny_strom.html?raw';
   .strom-ovl button{border:1px solid #c9bcae;background:#fff;border-radius:6px;padding:3px 10px;cursor:pointer;font:inherit}
   .strom-ovl button:hover{background:#f3ede6}
   .strom-ovl span{color:#6b5e54;min-width:3.5em;text-align:center}
+  .ft-zbal{display:block;margin:3px auto 0;border:1px solid #c9bcae;background:#fff;border-radius:10px;padding:0 6px;font:11px Arial,sans-serif;color:#6b5e54;cursor:pointer;line-height:16px}
+  .ft-zbal:hover{background:#f3ede6}
+  #strom li.zbalene > ul{display:none}
 </style>
 
 <script>
@@ -44,6 +47,30 @@ import strom from '../generated/rodinny_strom.html?raw';
       else if (a === '1') nastav(1);
       else if (a === 'fit') { nastav(1); nastav((wrap.clientWidth - 8) / ft.scrollWidth); }
     });
+    // rozbaľovanie a zbaľovanie vetiev (nápad z forkov jozefizso/mplisek rodokmen-skill)
+    const pocet = (li: Element) => li.querySelectorAll(':scope ul .ft-p:not(.ft-empty)').length;
+    const vetvy: HTMLElement[] = [];
+    for (const couple of ft.querySelectorAll<HTMLElement>('.ft-couple')) {
+      const li = couple.parentElement!;
+      const ul = li.querySelector(':scope > ul');
+      const n = ul ? pocet(li) : 0;
+      if (!n) continue;
+      const b = document.createElement('button');
+      b.type = 'button'; b.className = 'ft-zbal';
+      const popis = () => { b.textContent = li.classList.contains('zbalene') ? `▸ ${n}` : '▾'; b.title = li.classList.contains('zbalene') ? `Rozbaliť (${n} osôb)` : 'Zbaliť vetvu'; };
+      popis();
+      b.addEventListener('mousedown', (e) => e.stopPropagation());
+      b.addEventListener('click', () => { li.classList.toggle('zbalene'); popis(); });
+      couple.insertAdjacentElement('afterend', b);
+      vetvy.push(li);
+      (li as any)._popis = popis;
+    }
+    if (vetvy.length) {
+      const nastavVsetko = (zbal: boolean) => vetvy.forEach((li, i) => { if (i === 0) return; li.classList.toggle('zbalene', zbal); (li as any)._popis(); });
+      ovl.insertAdjacentHTML('beforeend', '<button data-v="zbal">Zbaliť vetvy</button><button data-v="rozbal">Rozbaliť všetko</button>');
+      ovl.querySelector('[data-v=zbal]')!.addEventListener('click', () => nastavVsetko(true));
+      ovl.querySelector('[data-v=rozbal]')!.addEventListener('click', () => nastavVsetko(false));
+    }
     // posúvanie ťahaním myšou
     let tah = false, x0 = 0, y0 = 0, sl = 0, st = 0;
     wrap.addEventListener('mousedown', (e) => {
