@@ -7,7 +7,8 @@ Bezpečnosť: port je náhodný a zapísaný len v súbore čitateľnom pre pou�
 Kým okno beží, iný program na tom istom počítači by sa k nemu mohol pripojiť – po práci ho zatvor (`stop`).
 
 Použitie (venv s playwright, napr. python3 -m venv ~/.local/share/rodokmen-pdf && …/pip install playwright && …/python -m playwright install chromium):  PY=~/.local/share/rodokmen-pdf/bin/python
-  $PY scripts/fs_okno.py start [url]          otvorí okno (ak ešte nebeží); predvolene familysearch.org
+  $PY scripts/fs_okno.py start [url] [--skryte]  otvorí okno (ak ešte nebeží); predvolene familysearch.org;
+                                              --skryte = bez viditeľného okna (na pozadí, neruší používateľa)
   $PY scripts/fs_okno.py stav                 beží? adresa a názov aktuálnej stránky
   $PY scripts/fs_okno.py otvor <url>          prejde na adresu, vypíše názov
   $PY scripts/fs_okno.py text [url]           text stránky (voliteľne najprv otvorí url)
@@ -53,7 +54,7 @@ def volny_port():
         return s.getsockname()[1]
 
 
-def start(url):
+def start(url, skryte=False):
     if bezi():
         print("Okno už beží.")
         return
@@ -64,7 +65,8 @@ def start(url):
     port = volny_port()
     proc = subprocess.Popen([exe, f"--user-data-dir={PROFIL}", f"--remote-debugging-port={port}",
                       "--remote-debugging-address=127.0.0.1", "--no-first-run", "--no-default-browser-check",
-                      "--window-size=1400,950", url],
+                      "--window-size=1400,950", "--force-device-scale-factor=2",
+                      *(["--headless=new"] if skryte else []), url],
                      stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
     fd = os.open(STAV, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
     with os.fdopen(fd, "w") as f:
@@ -100,7 +102,16 @@ def main():
         sys.exit(__doc__)
     cmd = a[0]
     if cmd == "start":
-        return start(a[1] if len(a) > 1 else "https://www.familysearch.org/")
+        b = [x for x in a[1:] if x != "--skryte"]
+        return start(b[0] if b else "https://www.familysearch.org/", "--skryte" in a)
+    if cmd == "stop":   # bez pripojenia – ukončí proces podľa PID (funguje aj keď sa k oknu nedá pripojiť)
+        s = nacitaj()
+        try:
+            os.kill(s["pid"], signal.SIGTERM)
+        except Exception:
+            pass
+        STAV.unlink(missing_ok=True)
+        return print("Okno zatvorené.")
     with sync_playwright() as p:
         br, pg = stranka(p)
         if cmd == "stav":
