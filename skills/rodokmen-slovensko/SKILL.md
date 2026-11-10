@@ -111,6 +111,15 @@ viac manželstiev). Nástroje sú v `tools/` tohto skillu, web stránky vo `web/
 - **Vojnové obete 2. sv. v.**: Vojenský historický archív Bratislava, VÚA Praha (kartotéka), miestne pamätníky.
 - **Sčítania**: Sáros 1869 (FS katalóg), uhorské súpisy.
 
+## 7b. Šetrenie tokenov
+- **Čitateľ matrík na Haiku:** skopíruj `agents/rodokmen-ctenar.md` do `<projekt>/.claude/agents/` (po reštarte Claude Code
+  je k dispozícii pomocník `rodokmen-ctenar`). Prezeranie viacerých snímok/registrov mu zadaj krátko (kód, kniha,
+  snímky už stiahnuté v `pracovni/…`, koho hľadať); hlási do `pracovni/pom_<kód>/hlaseni.md` aj so zoznamom prezretých
+  snímok. Haiku sa mýli hlavne v rokoch a číslach – nález vždy over sám na výreze. Podľa forku
+  jozefizso/rodokmen-skill (MIT), upravené na Haiku.
+- **Po dokončení vetvy** zapíš STAV a denník, ulož a navrhni používateľovi `/clear` – dlhá konverzácia míňa najviac.
+- **Fara obce v Čechách (Litoměřický kraj):** lexikón SOA Litoměřice jedným dopytom (skill rodokmen, `reference/metodika.md`).
+
 ## 8. Súkromie
 Žiadosti, kontakty, skeny dokladov a snímky hrobov nikdy do gitu ani na web. Nemanželský pôvod, choroby,
 príčiny smrti a žijúci ľudia – na web len so súhlasom (`kontrola.py` hlási CITLIVÉ).
