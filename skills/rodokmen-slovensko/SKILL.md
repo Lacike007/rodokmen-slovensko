@@ -106,6 +106,18 @@ viac manželstiev). Nástroje sú v `tools/` tohto skillu, web stránky vo `web/
 
 ## 7. Iné slovenské zdroje
 - **Hroby**: virtuálne cintoríny miest (Prešov – Technické služby mesta Prešov, cintorin@tsmp.sk) – dátumy, číslo hrobu.
+- **Virtuálne cintoríny (virtualnycintorin.sk)** – vyše milióna zosnulých, len zapojené obce, hlavne 20. a 21. storočie.
+  Uvádza **len dátum úmrtia a vek** (rok narodenia z veku = odhad ±1), ale pri ženách aj **rodné priezvisko**
+  a kto leží v tom istom hrobe (manželia, rodičia, deti). Bez prihlásenia. **robots.txt zakazuje robotom `/zosnuli/`,
+  `/hrob/`, `/obec/`** (stav 16. 11. 2026) – skriptom/curl len vyhľadanie mena (`/hladajz`, cez `tools/slusne.py curl`,
+  len konkrétne mená); zoznam zosnulých a detail hrobu otvor ako návštevník v okne prehliadača, stránku po stránke
+  (aspoň 10 s medzi stránkami), alebo ich otvorí používateľ:
+  - zosnulí podľa mena: `https://www.virtualnycintorin.sk/hladajz?s=<meno>` (`&r=1` hľadá aj podľa rodného priezviska);
+    priezvisko **celé**, diakritika nevadí, namiesto krstného mena stačí iniciála („J Novak“). Výsledok = cintoríny
+    s počtom nálezov; odkaz `/zosnuli/<id cintorína>?s=…` vypíše číslo hrobu, meno, dátum úmrtia a vek;
+  - detail hrobu `/hrob/<id>` = všetci pochovaní v hrobe a miesto na mape; cintoríny v obci `/hladaj?s=<obec alebo PSČ>`.
+  - Dátum úmrtia veď ako „podľa Virtuálne cintoríny“ (stav `prob`), kým ho nepotvrdí matrika alebo úmrtný list.
+  - Podľa forku jozefizso/rodokmen-skill (MIT).
 - **Noviny** (parte, nehody): Štátna vedecká knižnica (Prešov, Košice, B. Bystrica), digitálna knižnica Slovakiana.
 - **Ulice** sa premenovávali (napr. Hlinkova → Stalinova → …) – adresu v dokumente porovnaj s dobou.
 - **Vojnové obete 2. sv. v.**: Vojenský historický archív Bratislava, VÚA Praha (kartotéka), miestne pamätníky.
