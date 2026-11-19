@@ -110,8 +110,8 @@ viac manželstiev). Nástroje sú v `tools/` tohto skillu, web stránky vo `web/
   Uvádza **len dátum úmrtia a vek** (rok narodenia z veku = odhad ±1), ale pri ženách aj **rodné priezvisko**
   a kto leží v tom istom hrobe (manželia, rodičia, deti). Bez prihlásenia. **robots.txt zakazuje robotom `/zosnuli/`,
   `/hrob/`, `/obec/`** (stav 16. 11. 2026) – skriptom/curl len vyhľadanie mena (`/hladajz`, cez `tools/slusne.py curl`,
-  len konkrétne mená); zoznam zosnulých a detail hrobu otvor ako návštevník v okne prehliadača, stránku po stránke
-  (aspoň 10 s medzi stránkami), alebo ich otvorí používateľ:
+  len konkrétne mená); zoznam zosnulých a detail hrobu **otvorí používateľ sám** vo svojom prehliadači (Claude mu dá presné
+  odkazy `/zosnuli/<id>?s=<meno>` z výsledku hľadania; automatizovaný prehliadač je tiež robot):
   - zosnulí podľa mena: `https://www.virtualnycintorin.sk/hladajz?s=<meno>` (`&r=1` hľadá aj podľa rodného priezviska);
     priezvisko **celé**, diakritika nevadí, namiesto krstného mena stačí iniciála („J Novak“). Výsledok = cintoríny
     s počtom nálezov; odkaz `/zosnuli/<id cintorína>?s=…` vypíše číslo hrobu, meno, dátum úmrtia a vek;
@@ -129,6 +129,12 @@ viac manželstiev). Nástroje sú v `tools/` tohto skillu, web stránky vo `web/
   snímky už stiahnuté v `pracovni/…`, koho hľadať); hlási do `pracovni/pom_<kód>/hlaseni.md` aj so zoznamom prezretých
   snímok. Haiku sa mýli hlavne v rokoch a číslach – nález vždy over sám na výreze. Podľa forku
   jozefizso/rodokmen-skill (MIT), upravené na Haiku.
+- **Tri úrovne modelov (šetrí limit účtu):** čítanie snímok a registrov **vždy najprv Haiku** (`rodokmen-ctenar`), aj pri
+  jedinej snímke. Mechanickú viackrokovú prácu (otvoriť knihu a stiahnuť snímky, rozdeliť strany, výrezy a rámčeky podľa
+  daných súradníc, zapísať už overený nález cez `tools/zapis.py`, `kontrola.py`, uložiť) daj pomocníkovi na **Sonnete**
+  (Agent, `model: "sonnet"`) s presným zadaním (cesty, nástroje, čo vrátiť – krátko). Hlavný model len plánuje, overuje
+  nález na výreze v plnom rozlíšení a rozhoduje. Do chatu len výsledok, nie výpisy nástrojov. Prehliadač na jednom
+  archíve smie mať naraz len jeden pomocník.
 - **Po dokončení vetvy** zapíš STAV a denník, ulož a navrhni používateľovi `/clear` – dlhá konverzácia míňa najviac.
 - **Fara obce v Čechách (Litoměřický kraj):** lexikón SOA Litoměřice jedným dopytom (skill rodokmen, `reference/metodika.md`).
 
